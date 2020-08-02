@@ -1,6 +1,6 @@
 version: "3"
 services:
-  DeZero:
+  dezero:
     build: .
     container_name: "python3"
     working_dir: "/root/"
