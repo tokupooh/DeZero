@@ -22,7 +22,7 @@ class Variable():
 
         while funcs:
             f = funcs.pop()
-            x, y = f.input, f.ouput
+            x, y = f.input, f.output
             x.grad = f.backward(y.grad)
 
             if x.creator is not None:
