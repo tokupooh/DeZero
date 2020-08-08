@@ -164,8 +164,8 @@ def mul(x0, x1):
     return Mul()(x0, x1)
 
 
-#Variable.__add__ = add
-#Variable.__mul__ = mul
+# Variable.__add__ = add
+# Variable.__mul__ = mul
 
 if __name__ == '__main__':
     a = Variable(np.array(3.0))
