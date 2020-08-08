@@ -1,4 +1,4 @@
-is_simple_core = False
+is_simple_core = True
 
 if is_simple_core:
     from dezero.core_simple import Variable
