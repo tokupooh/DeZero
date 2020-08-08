@@ -22,6 +22,9 @@ def no_grad():
 
 
 class Variable:
+
+    __array_priority__ = 200  # add operator priority
+
     def __init__(self, data, name=None):
         if data is not None:
             if not isinstance(data, np.ndarray):
@@ -103,8 +106,20 @@ class Variable:
     def __add__(self, other):
         return add(self, other)
 
+    def __radd__(self, other):
+        return add(self, other)
+
     def __mul__(self, other):
         return mul(self, other)
+
+    def __rmul__(self, other):
+        return mul(self, other)
+
+
+def as_variable(obj):
+    if isinstance(obj, Variable):
+        return obj
+    return Variable(obj)
 
 
 def as_array(x):
@@ -115,8 +130,11 @@ def as_array(x):
 
 class Function:
     def __call__(self, *inputs):
+
+        inputs = [as_variable(x) for x in inputs]
         xs = [x.data for x in inputs]
         ys = self.forward(*xs)
+
         if not isinstance(ys, tuple):
             ys = (ys, )
         outputs = [Variable(as_array(y)) for y in ys]
@@ -147,6 +165,7 @@ class Add(Function):
 
 
 def add(x0, x1):
+    x1 = as_array(x1)
     return Add()(x0, x1)
 
 
@@ -161,21 +180,21 @@ class Mul(Function):
 
 
 def mul(x0, x1):
+    x1 = as_array(x1)
     return Mul()(x0, x1)
 
 
-# Variable.__add__ = add
-# Variable.__mul__ = mul
-
 if __name__ == '__main__':
-    a = Variable(np.array(3.0))
-    b = Variable(np.array(2.0))
-    c = Variable(np.array(1.0))
-
-    # y = add(mul(a, b), c)
-    y = a * b + c
-    y.backward()
-
+    x = Variable(np.array(2.0))
+    y = x + np.array(3.0)
     print(y)
-    print(a.grad)
-    print(b.grad)
+
+    y = x + 3.0
+    print(y)
+
+    y = 3.0 * x + 1.0
+    print(y)
+
+    x = Variable(np.array([1.0]))
+    y = np.array([2.0]) + x
+    print(y)
