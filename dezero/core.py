@@ -174,6 +174,19 @@ class Variable():
             shape = shape[0]
         return dezero.functions.reshape(self, shape)
 
+    def transpose(self, *axes):
+        if len(axes) == 0:
+            axes = None
+        elif len(axes) == 1:
+            if isinstance(axes[0], (tuple, list)) or axes[0] is None:
+                axes = axes[0]
+
+        return dezero.functions.transpose(self, axes)
+
+    @property
+    def T(self):
+        return dezero.functions.transpose(self)
+
 
 def as_variable(obj):
     """ convert from np.ndarray object to Variable object
