@@ -167,6 +167,11 @@ class Variable():
                 for y in f.outputs:
                     y().grad = None
 
+    def reshape(self, *shape):
+        if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
+            shape = shape[0]
+        return dezero.functions.reshape(self, shape)
+
 
 def as_variable(obj):
     """ convert from np.ndarray object to Variable object
