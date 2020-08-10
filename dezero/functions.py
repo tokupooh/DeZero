@@ -53,6 +53,21 @@ def tanh(x):
     return Tanh()(x)
 
 
+class Exp(Function):
+    def forward(self, x):
+        y = np.exp(x)
+        return y
+
+    def backward(self, gy):
+        y = self.outputs[0]()
+        gx = gy * y
+        return gx
+
+
+def exp(x):
+    return Exp()(x)
+
+
 # =============================================================================
 # Tensor operations: reshape / transpose / get_item / expand_dims / flatten
 # =============================================================================
@@ -180,6 +195,47 @@ class MatMul(Function):
 
 def matmul(x, W):
     return MatMul()(x, W)
+
+
+class Linear(Function):
+    def forward(self, x, W, b):
+        y = x.dot(W)
+        if b is not None:
+            y += b
+        return y
+
+    def backward(self, gy):
+        x, W, b = self.inputs
+        gb = None
+        if b.data is not None:
+            gb = sum_to(gy, b.shape)
+
+        gx = matmul(gy, W.T)
+        gW = matmul(x.T, gy)
+        return gx, gW, gb
+
+
+def linear(x, W, b=None):
+    return Linear()(x, W, b)
+
+
+def linear_simple(x, W, b=None):
+    t = matmul(x, W)
+    if b is None:
+        return t
+
+    y = t + b
+    t.data = None  # release for memory efficiency
+    return y
+
+
+# =============================================================================
+# activation function: sigmoid / relu / softmax / log_softmax / leaky_relu
+# =============================================================================
+def sigmoid_simple(x):
+    x = as_variable(x)
+    y = 1 / (1 + exp(-x))
+    return y
 
 
 # =============================================================================
