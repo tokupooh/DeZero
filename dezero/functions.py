@@ -68,6 +68,21 @@ def exp(x):
     return Exp()(x)
 
 
+class Log(Function):
+    def forward(self, x):
+        y = np.log(x)
+        return y
+
+    def backward(self, gy):
+        x, = self.inputs
+        gx = gy / x
+        return gx
+
+
+def log(x):
+    return Log()(x)
+
+
 # =============================================================================
 # Tensor operations: reshape / transpose / get_item / expand_dims / flatten
 # =============================================================================
@@ -341,3 +356,41 @@ class MeanSquaredError(Function):
 
 def mean_squared_error(x0, x1):
     return MeanSquaredError()(x0, x1)
+
+
+def soft_cross_entropy_simple(x, t):
+    x = as_variable(x)
+    t = as_variable(t)
+    N = x.shape[0]
+    p = softmax(x)
+    p = clip(p, 1e-15, 1.0)  # avoid log(0)
+    log_p = log(p)
+
+    tlog_p = log_p(np.arange(N), t.data)
+    y = -1 * sum(tlog_p) / N
+    return y
+
+
+# =============================================================================
+# max / min / clip
+# =============================================================================
+
+
+class Clip(Function):
+    def __init__(self, x_min, x_max):
+        self.x_min = x_min
+        self.x_max = x_max
+
+    def forward(self, x):
+        y = np.clip(x, self.x_min, self.x_max)
+        return y
+
+    def backward(self, gy):
+        x, = self.inputs
+        mask = (x.data >= self.x_min) * (x.data <= self.x_max)
+        gx = gy * mask
+        return gx
+
+
+def clip(x, x_min, x_max):
+    return Clip(x_min, x_max)(x)
