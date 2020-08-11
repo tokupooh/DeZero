@@ -120,6 +120,7 @@ class GetItem(Function):
 
     def forward(self, x):
         y = x[self.slices]
+        return y
 
     def backward(self, gy):
         x, = self.inputs
