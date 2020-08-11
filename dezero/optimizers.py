@@ -80,3 +80,31 @@ class AdaGrad(Optimizer):
 
         h += grad * grad
         param.data -= lr * grad / (np.sqrt(h) + eps)
+
+
+class AdaDelta(Optimizer):
+    def __init__(self, rho=0.95, eps=1e-6):
+        super().__init__()
+        self.rho = rho
+        self.eps = eps
+        self.msg = {}  # mean-squared gradient
+        self.msdx = {}  # mean-squared diff param
+
+    def update_one(self, param):
+        key = id(param)
+
+        if key not in self.msg:
+            self.msg[key] = np.zeros_like(param.data)
+            self.msdx[key] = np.zeros_like(param.data)
+
+        msg, msdx = self.msg[key], self.msdx[key]
+        rho = self.rho
+        eps = self.eps
+        grad = param.grad.data
+
+        msg *= rho
+        msg += (1 - rho) * grad * grad
+        dx = np.sqrt((msdx + eps) / (msg + eps)) * grad
+        msdx *= rho
+        msdx += (1 - rho) * dx * dx
+        param.data -= dx
