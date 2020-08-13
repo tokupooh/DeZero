@@ -21,7 +21,7 @@ class Dataset():
         self.label = None
         self.prepare()
 
-    def _getitem__(self, index):
+    def __getitem__(self, index):
         assert np.isscalar(index)
         if self.label is None:
             return self.transform(self.data[index]), None
