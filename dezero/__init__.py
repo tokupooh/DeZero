@@ -20,8 +20,11 @@ else:
     from dezero.core import Config
     from dezero.layers import Layer
     from dezero.models import Model
+    from dezero.datasets import Dataset
+    from dezero.dataloaders import DataLoader
 
     import dezero.datasets
+    import dezero.dataloaders
     import dezero.optimizers
     import dezero.functions
     import dezero.layers
