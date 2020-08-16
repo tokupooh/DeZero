@@ -1,5 +1,5 @@
 import numpy as np
-
+import dezero
 from dezero import utils
 from dezero.core import Function, Variable, as_array, as_variable
 
@@ -447,3 +447,15 @@ def accuracy(y, t):
     result = (pred == t.data)
     acc = result.mean()
     return Variable(as_array(acc))
+
+
+def dropout(x, dropout_ratio=0.5):
+    x = as_variable(x)
+
+    if dezero.Config.train:
+        mask = np.random.rand(*x.shape) > dropout_ratio
+        scale = np.array(1.0 - dropout_ratio).astype(x.dtype)
+        y = x * mask / scale
+        return y
+    else:
+        return x
