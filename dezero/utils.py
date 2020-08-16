@@ -1,6 +1,6 @@
 import os
 import subprocess
-
+import urllib.request
 import numpy as np
 
 # =============================================================================
@@ -168,6 +168,8 @@ def logsumexp(x, axis=1):
 # =============================================================================
 # download function
 # =============================================================================
+
+
 def show_progress(block_num, block_size, total_size):
     bar_template = "\r[{}] {:.2f}%"
 
