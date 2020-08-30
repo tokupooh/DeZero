@@ -297,9 +297,9 @@ class Mul(Function):
         gx1 = gy * x0
 
         # broadcast
-        if self.x0_shape != self.x1_shape:
-            gx0 = dezero.functions.sum_to(gx0, self.x0_shape)
-            gx1 = dezero.functions.sum_to(gx1, self.x1_shape)
+        if x0.shape != x1.shape:
+            gx0 = dezero.functions.sum_to(gx0, x0.shape)
+            gx1 = dezero.functions.sum_to(gx1, x1.shape)
 
         return gx0, gx1
 
