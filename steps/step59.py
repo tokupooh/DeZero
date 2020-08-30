@@ -80,4 +80,4 @@ if __name__ == '__main__':
     plt.xlabel('x')
     plt.ylabel('y')
     plt.legend()
-    plt.savefig('../step59.png', dpi=300)
+    plt.savefig('step59.png', dpi=300)
