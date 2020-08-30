@@ -195,6 +195,9 @@ class Variable():
     def sum(self, axis=None, keepdims=False):
         return dezero.functions.sum(self, axis, keepdims)
 
+    def unchain(self):
+        self.creator = None
+
 
 class Parameter(Variable):
     pass
