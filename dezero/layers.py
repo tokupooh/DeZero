@@ -151,7 +151,7 @@ class Conv2d(Layer):
         else:
             self.b = Parameter(np.zeros(out_channels, dtype=dtype), name='b')
 
-    def _init_W(self, xp=np):
+    def _init_W(self):
         C, OC = self.in_channels, self.out_channels
         KH, KW = pair(self.kernel_size)
         scale = np.sqrt(1 / (C * KH * KW))
@@ -214,7 +214,7 @@ class Deconv2d(Layer):
     def forward(self, x):
         if self.W.data is None:
             self.in_channels = x.shape[1]
-            self._init_W(np)
+            self._init_W()
 
         y = F.deconv2d(x, self.W, self.b, self.stride, self.pad)
         return y
